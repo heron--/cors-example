@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<title>CORS Anywhere Example</title>	
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous"></script>
+		<script src="key.js"></script>
+		<style>
+			pre {
+				white-space: normal;
+				background-color: #f1f1f1;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<h1>Without Proxy</h1>
+			<pre class="without-proxy"></pre>
+		</div>
+		<div>
+			<h1>With Proxy</h1>
+			<pre class="with-proxy"></pre>
+		</div>
+		<script>
+			function logToDOM(message, dest) {
+				$(dest).html(message);
+			}	
+
+			const apiKey = window.apiKey;
+
+			const yelpUrl = 'https://api.yelp.com/v3/businesses/search?location=jersey+city,nj';
+			const proxyUrl = 'https://shielded-hamlet-43668.herokuapp.com/';
+
+			$.ajax({
+				url: yelpUrl,
+				headers: {
+					authorization: 'Bearer ' + apiKey
+				}
+			})
+				.done(response => {
+					console.log(response);
+					const message = JSON.stringify(response);
+					const container = document.querySelector('.without-proxy');
+
+					logToDOM(message, container);
+				})
+				.catch(error => {
+					console.error(error);
+					const message = JSON.stringify(error);
+					const container = document.querySelector('.without-proxy');
+
+					logToDOM(message, container);
+				});
+
+			$.ajax({
+				url: proxyUrl + yelpUrl,
+				headers: {
+					authorization: 'Bearer ' + apiKey
+				}
+			})
+				.done(response => {
+					console.log(response);
+					const message = JSON.stringify(response);
+					const container = document.querySelector('.with-proxy');
+
+					logToDOM(message, container);
+				})
+				.catch(error => {
+					console.error(error);
+					const message = JSON.stringify(error);
+					const container = document.querySelector('.with-proxy');
+
+					logToDOM(message, container);
+				});
+
+		</script>	
+	</body>
+</html>
